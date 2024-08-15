@@ -1,85 +1,128 @@
-## Corelab Challenge:
+# Teste Colab Frontend
+Aplicação que cria e manipula posts
 
-You are tasked with building a web application that allows users to create and manage their to-do lists. The application should consist of a responsive webpage built in React, and an API built in Node.js to store and manage the to-do lists.
+## Pré-requisitos
+- [Node.js](https://nodejs.org/en) : ^16.15.0
+- NPM: ^8,5,5
+- IDE (Recomendamos [VsCode](https://code.visualstudio.com/))
 
-
-### The repositories
-The [frontend repository](https://github.com/corelabbr/corelab-web-challenge)
-
-If you feel more comfortable, you can pick another React framework and show us your skills.
-
-The [backend repository](https://github.com/corelabbr/corelab-api-challenge)
-
-If you feel more comfortable, you can pick another Node JS framework and show us your skills.
-
-### The Layout
-Open the [layout mockup](https://www.figma.com/file/sQrUVHTlyogq3qGdkqGTXN/mockup?node-id=7%3A2&t=ANTOTiqjqGWYuoUr-0) in desktop and mobile version and follow this design as much as possible.
+## Instalação
 
 
-### The application should have the following functionality:
+Abrir pasta do projeto:
+```
+  cd  CORELAB-WEB-CHALLENGE
+```
 
-1. Users should be able to create, read, update, and delete to-do items using the API.
-2. Users should be able to mark an item as a favorite.
-3. Users should be able to set a color for each to-do item.
-4. The React frontend should display the user's to-do list in a responsive and visually appealing manner, with the ability to filter by favorite items and color.
-5. The favorited items should be displayed at the top of the list.
+Instalar as dependências:
+```
+npm install
+```
 
-### Technical Requirements:
-1. The backend API should be built in Node.js framework and use a database of your choice (e.g., MongoDB, PostgreSQL, etc.).
-2. The frontend should be built in React and use modern web development tools and best practices.
-3. The application should be responsive and visually appealing.
+Executar o projeto:
+```
+npm run dev 
+```
 
-### Deliverables:
-1. A link to a GitHub repository containing the complete source code for the project.
-2. A written description of how to set up and run the application locally.
+## Tecnologias utilizadas
+- [HTML](https://developer.mozilla.org/pt-BR/docs/Web/HTML) - Linguagem de Marcação de Hipertexto.
+- [CSS](https://developer.mozilla.org/pt-BR/docs/Web/CSS) - Linguagem de Estilização.
+- [Javascript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) - Linguagem de programação.
+- [Typescript](https://www.typescriptlang.org/) - Linguagem de Programação.
+- [React](https://pt-br.react.dev/) - Biblioteca do javascript.
+- [Cloudinary](https://cloudinary.com/) - Armazena arquivo e retorna sua url.
 
+# Estrutura do Frontend
 
-### Evaluation Criteria:
-1. Code Quality
-2. Code Format
-3. Code Perfomance
-4. Frontend Design
-5. If your code is Easily Readable
-6. Mobile First approach
-7. Code Responsability
-8. Features Work
-9. Responsiveness
-10. Does the application meet the functionality requirements listed above?
-11. Is the code well-organized, easy to read, and well-documented?
-12. Are modern web development tools and best practices used?
-13. Is the application visually appealing and responsive?
+1. **Pasta `assets`**:
+   - **Descrição**: Armazena imagens e arquivos estáticos utilizados na aplicação.
+   - **Conteúdo**:
+     - **Imagens e Arquivos**: Inclui todos os arquivos de imagem e outros arquivos estáticos necessários para o design e funcionalidade do frontend.
 
-### Backend
-Repository: 
-1. Node: ^16.15.0
-2. NPM: ^8.5.5
-3. Framework: Adonis TS or any other node framework you know.
-4. Database: Choose your own, you can even save in memory.
+2. **Pasta `components`**:
+   - **Descrição**: Contém todos os componentes reutilizáveis da aplicação.
+   - **Estrutura de cada componente**:
+     - **Arquivo `.tsx`**: Define a lógica e a estrutura JSX do componente. Inclui importações de dependências, definição de interfaces para props, e a função de renderização que retorna o JSX.
+     - **Arquivo `.scss`**: Contém a estilização específica do componente usando SASS. Inclui variáveis, mixins e estilos aplicados ao componente.
 
-### Frontend
-Repository: 
-1. Node: ^16.15.0
-2. NPM: ^8.5.5
-3. Framework: React TS
-4. Sass or other preprocessor
+   - **Componentes Detalhados**:
+     - **`Menu`**:
+       - **Descrição**: Inclui a logo, um campo de pesquisa e um botão de fechamento (X).
+       - **Funcionalidade dos Botões**:
+         - **Campo de Pesquisa**:
+           - **Ação**: O usuário digita um termo no campo de pesquisa.
+           - **Comportamento**: O texto digitado é armazenado em um estado local. Esse estado é passado para a página principal, onde filtra os posts com base no texto inserido. A filtragem verifica o título, descrição e cor dos posts. A cor é considerada apenas se o nome corresponder exatamente ao nome na lista de cores.
+           - **Motivo**: Facilitar a busca de posts específicos com base nas palavras-chave fornecidas pelo usuário.
+         - **Botão de Fechamento (X)**:
+           - **Ação**: O usuário clica no botão de fechamento.
+           - **Comportamento**: Limpa o texto do campo de pesquisa e redefine o estado associado na página principal, retornando à visualização completa dos posts.
+           - **Motivo**: Permitir ao usuário cancelar a pesquisa atual e visualizar todos os posts novamente.
 
-### Want to impress us even more?
-If you feel comfortable and want to impress us even more, you can do the following:
+     - **`Color`**:
+       - **Descrição**: Exibe uma esfera colorida.
+       - **Funcionalidade**:
+         - **Ação**: O usuário clica na esfera colorida.
+         - **Comportamento**: A cor da esfera é alterada e uma função de callback é chamada para modificar a cor exibida.
+         - **Motivo**: Permitir ao usuário selecionar e aplicar uma nova cor ao post ou ao elemento associado.
 
-1. Work on correct types and interfaces
-2. Work on eslint rules
-3. Work prettier config
-4. Work on docker containers
-5. Work on tests
-6. Work on CI/CD
+     - **`Loading`**:
+       - **Descrição**: Mostra uma tela de carregamento enquanto os dados estão sendo processados.
+       - **Funcionalidade**:
+         - **Ação**: O componente é exibido durante operações de carregamento.
+         - **Comportamento**: Indica visualmente que a aplicação está processando ou carregando dados.
+         - **Motivo**: Informar ao usuário que o sistema está trabalhando e que a operação está em andamento.
 
-### What to do when you finish?
+     - **`WarningMessage`**:
+       - **Descrição**: Exibe uma mensagem de confirmação para ações críticas, como deletar um post.
+       - **Funcionalidade**:
+         - **Ação**: O usuário clica para deletar um post.
+         - **Comportamento**:
+           - **Exibição do Aviso**: Uma mensagem de confirmação aparece, ativada por um estado booleano que indica a necessidade de confirmação.
+           - **Resposta do Usuário**:
+             - **Cancelar**: Desativa o estado de aviso, ocultando a mensagem e preservando o post.
+             - **Deletar**: O post selecionado é removido da lista. A função de deletar verifica se o post a ser excluído corresponde ao post visível no momento e, se assim for, remove o post específico.
+         - **Motivo**: Garantir que o usuário tenha a oportunidade de confirmar ou cancelar a exclusão de um post, evitando exclusões acidentais.
 
-Create a file PULL_REQUEST.md where you will describe what you did and how in as much detail as possible. Feel free to add videos for better explanation.
+     - **`CreatePost`**:
+       - **Descrição**: Permite a criação de um novo post.
+       - **Funcionalidade**:
+         - **Ação**: O usuário preenche os campos de título, descrição, e adiciona uma imagem ou PDF.
+         - **Comportamento**:
+           - **Adicionar Arquivo**: O arquivo pode ser arrastado para a área designada ou selecionado manualmente. Se for uma imagem ou PDF, o arquivo é enviado para o Cloudinary, que retorna uma URL pública. Essa URL e o ID do arquivo são armazenados.
+           - **Modificar Cor**: A cor do post pode ser alterada usando o componente `Color`.
+           - **Favoritar**: O post pode ser marcado como favorito.
+           - **Cancelar**: O usuário pode cancelar a criação do post, retornando ao estado inicial.
+         - **Motivo**: Permitir ao usuário criar e personalizar novos posts, com opções para adicionar conteúdo e modificar aspectos visuais.
 
-Create a new pull request using the same branch name for Backend and Frontend
+     - **`SeePost`**:
+       - **Descrição**: Permite visualizar e modificar um post existente.
+       - **Funcionalidade**:
+         - **Ação**: O usuário pode editar o post, alterar cor, adicionar ou remover arquivos.
+         - **Comportamento**:
+           - **Modo de Edição**: Ativado ao clicar no ícone de lápis. Exibe a interface de edição com opções para alterar título, descrição, cor e arquivos.
+           - **Alterar Dados**: As alterações são enviadas para a API, que só modifica os campos alterados, preservando os valores não modificados.
+           - **Adicionar/Remover Arquivos**: Arquivos podem ser adicionados ou removidos, e a visibilidade do botão de remoção é controlada pelo estado de edição.
+           - **Salvar Alterações**: O botão de confirmação salva as alterações feitas, enquanto o ícone de lápis alterna entre o modo de edição e visualização.
+         - **Motivo**: Permitir ao usuário atualizar posts existentes, facilitando a modificação de informações e a manutenção de conteúdo.
 
-Send us the pull requests and that's all!
+3. **Pasta `hooks`**:
+   - **Descrição**: Contém hooks personalizados para interagir com a API e gerenciar estados específicos.
+   - **Conteúdo**:
+     - **Arquivos**:
+       - **Chamada de API**: Inclui funções para adicionar, deletar, modificar e buscar posts da API. Cada hook define como a API é chamada, incluindo as importações necessárias, interfaces para dados recebidos e retornados, e o tratamento de erros.
 
+4. **Pasta `lib`**:
+   - **Descrição**: Contém funções auxiliares para chamadas de API.
+   - **Conteúdo**:
+     - **API do Backend**: Configura a URL base da API e funções para interagir com o backend usando REST.
+     - **API do Cloudinary**: Configura a comunicação com o Cloudinary para upload de arquivos, incluindo imagens e PDFs. As funções retornam URLs públicas para os arquivos.
 
-#### Good luck! The sky is the limit 🚀
+5. **Pasta `page`**:
+   - **Descrição**: Contém a página principal e outras páginas da aplicação.
+   - **Conteúdo**:
+     - **Arquivo da Página**:
+       - **Funções**:
+         - **Exibição de Componentes**: Importa e exibe os componentes necessários.
+         - **Chamada de Dados**: Realiza uma chamada à API para obter posts já criados.
+         - **Filtragem e Pesquisa**: Verifica a existência de termos de pesquisa vindos do componente `Menu` e filtra os posts com base nisso.
+         - **Carrossel de Posts**: Implementa um carrossel para navegação entre posts, ajustando o número de posts visíveis com base no tamanho da tela. O controle de rotação é feito por imagens de seta e ajusta-se dinamicamente para telas grandes (três posts), médias (dois posts) e pequenas (um post).

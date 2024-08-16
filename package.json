@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "webpack --config webpack.config.js --env.NODE_ENV=production",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -52,7 +52,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "webpack-cli": "^5.1.4"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }

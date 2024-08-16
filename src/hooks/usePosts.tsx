@@ -1,45 +1,40 @@
-import axios from 'axios';
-import api from "../lib/api";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from '../api/firebaseConfig';
 
-export type post = {
-    title: string;
-    text?: string;
-    media: string[];
-    color: string;
-    favorite: boolean;
-  }
-
-interface PostResult {
-  authenticationP: (post:post) => Promise<any>;
+export type Post = {
+  title: string;
+  text?: string;
+  media: string[];
+  color: string;
+  favorite: boolean;
 }
 
+interface PostResult {
+  authenticationP: (post: Post) => Promise<string>;
+}
 
 export const usePosts = (): PostResult => {
 
-  const authenticationP = async (post: post) => {
-
+  const authenticationP = async (post: Post): Promise<string> => {
     try {
-      const response = await api.post  ('/posts',  {
-        title:post.title,
-        text:post.text,
-        favorite:post.favorite,
-        color:post.color,
-        media:post.media
+      const docRef = await addDoc(collection(db, "posts"), {
+        title: post.title,
+        text: post.text,
+        favorite: post.favorite,
+        color: post.color,
+        media: post.media
       });
 
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 400) {
-          return "post erro"
-        }else{
-          return "servidor erro"
-        }
+      return `Post created successfully.`;
+    } catch (e) {
+      if (e instanceof Error) {
+        console.error("Error adding document: ", e.message);
+        return `Error adding document: ${e.message}`;
       } else {
-        console.error('Erro desconhecido:', error)
+        console.error("Unknown error:", e);
+        return `Unknown error occurred while adding document.`;
       }
     }
-
   };
 
   return { authenticationP };

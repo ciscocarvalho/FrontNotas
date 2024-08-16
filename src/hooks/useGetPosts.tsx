@@ -1,41 +1,38 @@
-import axios from 'axios';
-import api from "../lib/api";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from '../api/firebaseConfig';
 
 export type postGet = {
-    title: string;
-    text?: string;
-    media: string[];
-    color: string;
-    favorite: boolean;
-    id: number;
-  }
+  title: string;
+  text?: string;
+  media: string[];
+  color: string;
+  favorite: boolean;
+  id: string;  
+}
 
 interface GetResult {
   authenticationGP: () => Promise<postGet[]>;
 }
 
-
 export const useGetPosts = (): GetResult => {
 
-  const authenticationGP = async () => {
-
+  const authenticationGP = async (): Promise<postGet[]> => {
     try {
-      const response = await api.get('/posts');
+      const querySnapshot = await getDocs(collection(db, "posts"));
+      
+      const posts: postGet[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,  
+        ...doc.data() as Omit<postGet, 'id'> 
+      }));
 
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 400) {
-          return "post erro"
-        }else{
-          return "servidor erro"
-        }
-      } else {
-        console.error('Erro desconhecido:', error)
-      }
+      console.log(posts);  
+
+      return posts;
+    } catch (e) {
+      console.error("Error fetching documents: ", e);
+      return [];  
     }
-
   };
 
-  return { authenticationGP};
+  return { authenticationGP };
 };

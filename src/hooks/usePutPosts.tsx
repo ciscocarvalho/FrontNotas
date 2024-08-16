@@ -1,47 +1,37 @@
-import axios from 'axios';
-import api from "../lib/api";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from '../api/firebaseConfig';
 
-export type post = {
-    title?: string;
-    text?: string;
-    media?: string[];
-    color?: string;
-    favorite?: boolean;
-    id: number;
-  }
-
-interface PutResult {
-  authenticationPU: (post:post) => Promise<string>;
+export type PostUpdate = {
+  title?: string;
+  text?: string;
+  media?: string[];
+  color?: string;
+  favorite?: boolean;
+  id: string;
 }
 
+interface PutResult {
+  authenticationPU: (updates: PostUpdate) => Promise<string>;
+}
 
 export const usePutPosts = (): PutResult => {
 
-  const authenticationPU = async (post: post) => {
-
+  const authenticationPU = async ( updates: PostUpdate): Promise<string> => {
     try {
-      const response = await api.put('/posts/' + post.id,  {
-        title:post.title,
-        text:post.text,
-        favorite:post.favorite,
-        color:post.color,
-        media:post.media
-      });
+      const docRef = doc(db, "posts", updates.id);
 
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 400) {
-          return "put erro"
-        }else{
-          return "servidor erro"
-        }
+      await updateDoc(docRef, updates);
+
+      return "Post updated successfully.";
+    } catch (e) {
+      if (e instanceof Error) {
+        return `Error updating document: ${e.message}`;
       } else {
-        console.error('Erro desconhecido:', error)
+        return `Error updating document: Unknown error`;
       }
     }
-
   };
 
-  return { authenticationPU};
+  return { authenticationPU };
 };
+

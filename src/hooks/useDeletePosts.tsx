@@ -1,34 +1,30 @@
-import axios from 'axios';
-import api from "../lib/api";
-
-
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from '../api/firebaseConfig';
 
 interface DeleteResult {
-  authenticationDE: (id:number) => Promise<string>;
+  authenticationDE: (id: string) => Promise<string>;
 }
-
 
 export const useDeletePosts = (): DeleteResult => {
 
-  const authenticationDE = async (id:number) => {
-
+  const authenticationDE = async (id: string): Promise<string> => {
     try {
-      const response = await api.delete('/posts/' + id,);
+      const docRef = doc(db, "posts", id);
 
-      return response.data;
+      await deleteDoc(docRef);
+
+      return "Post deleted successfully.";
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 400) {
-          return "delete erro"
-        }else{
-          return "servidor erro"
-        }
+      console.error('Error deleting document:', error);
+      
+      if (error instanceof Error) {
+        return `Error deleting document: ${error.message}`;
       } else {
-        console.error('Erro desconhecido:', error)
+        return `Unknown error occurred during deletion.`;
       }
     }
-
   };
 
-  return { authenticationDE};
+  return { authenticationDE };
 };
+

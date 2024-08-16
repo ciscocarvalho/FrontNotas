@@ -8,6 +8,8 @@ import next from "../../assents/proximo.png";
 import listColorN from "../../assents/color.json"
 import Loading from "../../components/loading/Loading";
 import WarningMessage from "../../components/warningMessage/WarningMessage";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from '../../api/firebaseConfig'; 
 
 const Posts = () => {
     const { authenticationGP } = useGetPosts();
@@ -69,28 +71,34 @@ const Posts = () => {
     }, []);
 
     useEffect(() => {
-        const list = authenticationGP();
-        list.then(value => {
-            if (value.map !== undefined && value.length !== 0) {
-               
-                const filteredFavPosts = value.filter(item => 
-                    item.favorite &&
-                    (item.text?.includes(searchTerm) || 
-                     item.title.includes(searchTerm) || 
-                     colors.some(color => color.nameColor === searchTerm && color.color === item.color))
-                );
-                const filteredPosts = value.filter(item => 
-                    item.favorite === false &&
-                    (item.text?.includes(searchTerm) || 
-                     item.title.includes(searchTerm) || 
-                     colors.some(color => color.nameColor === searchTerm && color.color === item.color))
-                );
-    
-                setListFavPost(filteredFavPosts);
-                setListPost(filteredPosts);
-            }
+        const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
+          const posts: postGet[] = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          } as postGet));
+      
+          const filteredFavPosts = posts.filter(item => 
+            item.favorite &&
+            (item.text?.includes(searchTerm) || 
+             item.title.includes(searchTerm) || 
+             colors.some(color => color.nameColor === searchTerm && color.color === item.color))
+          );
+          const filteredPosts = posts.filter(item => 
+            item.favorite === false &&
+            (item.text?.includes(searchTerm) || 
+             item.title.includes(searchTerm) || 
+             colors.some(color => color.nameColor === searchTerm && color.color === item.color))
+          );
+      
+          setListFavPost(filteredFavPosts);
+          setListPost(filteredPosts);
+        }, (error) => {
+          console.error("Error listening to collection: ", error);
         });
-    }, [update, searchTerm, colors]);
+      
+        return () => unsubscribe();
+      }, [searchTerm, colors]);
+      
 
     const handleNext = (list: postGet[], setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, currentIndex: number) => {
         if (currentIndex + itemsToShow < list.length) {

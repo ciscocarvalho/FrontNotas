@@ -21,7 +21,7 @@ export type postSee = {
     media: string[];
     color: string;
     favorite: boolean;
-    id: number;
+    id: string;
     authentication: ()=>void;
     loadingFunction:(value:boolean)=>void;
     trueDeletePost: boolean;

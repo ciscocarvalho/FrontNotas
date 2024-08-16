@@ -2,8 +2,7 @@
 Aplicação que cria e manipula posts
 
 ## Pré-requisitos
-- [Node.js](https://nodejs.org/en) : ^16.15.0
-- NPM: ^8,5,5
+- [Node.js](https://nodejs.org/en)
 - IDE (Recomendamos [VsCode](https://code.visualstudio.com/))
 
 ## Instalação

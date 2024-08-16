@@ -1,7 +1,6 @@
 import { ChangeEvent, useRef, useState } from "react";
 import star from "../../assents/Vector.png";
 import starYellow from "../../assents/Group 2464.png";
-import pencil from "../../assents/ferramenta-lapis.png";
 import exit from "../../assents/Vector (1).png"
 import paint from "../../assents/balde-de-tinta.png";
 import right from "../../assents/marca-de-verificacao.png"

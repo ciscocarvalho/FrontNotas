@@ -35,29 +35,28 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
     const [textN, setTextN] = useState(text)
     const [colorN, setColorN] = useState(color)
     const [favoriteN, setFavoriteN] = useState<boolean>(favorite)
-    const [idPost, setIdPost] = useState(id)
-    const [idPostCloud, setIdPostCloud] = useState<string|null>("")
+  
+    // const [idPostCloud, setIdPostCloud] = useState<string|null>("")
     const [seeColor, setSeeColor] = useState(false)
     const [seeEditPost, setSeeEditPost] = useState(false)
     const [filePreview, setFilePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string | null>(null);
     const {authenticationPU} = usePutPosts()
     const {authenticationDE} = useDeletePosts()
-    const [updateMedia, setUpdateMedia] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(()=>{
         if(media.length === 3){
-            setIdPostCloud(media[2])
+            // setIdPostCloud(media[2])
             setFileName(media[1])
             setFilePreview(media[0])
         }else if(media.length === 2){
-            setIdPostCloud(media[1])
+            // setIdPostCloud(media[1])
             setFilePreview(media[0])
         }
         setTextN(text)
         setTitleN(title)
-    },[media])
+    },[media, text, title])
 
     useEffect(()=>{
         
@@ -69,7 +68,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                 }
             })
         }
-    },[trueDeletePost])
+    },[authentication, authenticationDE, id, trueDeletePost])
 
     const HandleChanges = {
         handleText: (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -162,7 +161,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                             favorite: favoriteN,
                             color: colorN,
                             media: mediaL,
-                            id: idPost
+                            id: id
                        }
                         const res = authenticationPU(post)
                         res.then(value=>{
@@ -185,7 +184,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                             favorite: favoriteN,
                             color: colorN,
                             media: mediaL,
-                            id: idPost
+                            id: id
                        }
                         const res = authenticationPU(post)
                         res.then(value=>{
@@ -206,7 +205,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                 favorite: favoriteN,
                 color: colorN,
                 media: media,
-                id: idPost
+                id: id
            }
             const res = authenticationPU(post)
             res.then(value=>{
@@ -237,7 +236,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                             favorite: favoriteN,
                             color: colorN,
                             media: mediaL,
-                            id: idPost
+                            id: id
                        }
                         const res = authenticationPU(post)
                         res.then(value=>{
@@ -261,7 +260,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                             favorite: favoriteN,
                             color: colorN,
                             media: mediaL,
-                            id: idPost
+                            id: id
                        }
                         const res = authenticationPU(post)
                         res.then(value=>{
@@ -280,7 +279,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                 favorite: favoriteN,
                 color: colorN,
                 media: media,
-                id: idPost
+                id: id
            }
             const res = authenticationPU(post)
             res.then(value=>{
@@ -303,7 +302,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
     const favoriteFunction = () =>{
         setFavoriteN(!favorite)
         const postN = {
-            id: idPost,
+            id: id,
             favorite: !favoriteN,
        }
       
@@ -320,25 +319,25 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
             setTextN(text)
             setTitleN(title)
             if(media.length === 3){
-                setIdPostCloud(null)
+                // setIdPostCloud(null)
                 setFileName(null)
                 setFilePreview(null)
-                setIdPostCloud(media[2])
+                // setIdPostCloud(media[2])
                 setFileName(media[1])
                 setFilePreview(media[0])
             }else if(media.length === 2){
-                setIdPostCloud(null)
+                // setIdPostCloud(null)
                 setFilePreview(null)
                 setFileName(null)
-                setIdPostCloud(media[1])
+                // setIdPostCloud(media[1])
                 setFilePreview(media[0])
             }else{
-                setIdPostCloud(null)
+                // setIdPostCloud(null)
                 setFilePreview(null)
                 setFileName(null)
             }
         }
-    },[seeEditPost])
+    },[color, favorite, media, seeEditPost, text, title])
 
     
     return (

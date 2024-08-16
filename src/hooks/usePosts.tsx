@@ -24,7 +24,7 @@ export const usePosts = (): PostResult => {
         color: post.color,
         media: post.media
       });
-
+      console.log(docRef)
       return `Post created successfully.`;
     } catch (e) {
       if (e instanceof Error) {

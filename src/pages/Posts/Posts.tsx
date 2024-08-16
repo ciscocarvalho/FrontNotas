@@ -68,6 +68,7 @@ const Posts = () => {
                 setListPost(value.filter(item => item.favorite === false));
             }
         });
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {

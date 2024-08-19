@@ -10,6 +10,7 @@ import Color from "../color/Color";
 import listColor from "../../assents/color.json"
 import React from "react";
 import pdf from "../../assents/pdfn.png"
+import dowload from "../../assents/dowload.png"
 import cloudinary from "../../lib/cloudinary";
 import { usePutPosts } from "../../hooks/usePutPosts";
 import { useDeletePosts } from "../../hooks/useDeletePosts";
@@ -396,8 +397,8 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                 onChange={handleFileSelect}
             />
             {filePreview && fileName == null? (
-                <div>
-                    <img src={filePreview}  className="imgFile" alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px' }} />
+                <div className="imgFile">
+                    <img src={filePreview} alt="Preview"  className="imgImgFile"/>
                     {seeEditPost?(
                         <img 
                         src={exit} 
@@ -446,6 +447,14 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                 >
                     <img src={paint} alt="tinta" />
                 </div>
+               {filePreview?(
+                 <div className="dowload">
+                   <a href={filePreview} download={filePreview} target="_blank" rel="noopener noreferrer">
+                    <img src={dowload} alt="baixar"/>
+                   </a>
+                  
+                 </div>
+               ):null}
             </div>
             <div className="confirmOptionCreatePost">
                 {seeEditPost?(

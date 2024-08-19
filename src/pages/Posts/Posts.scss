@@ -7,6 +7,14 @@
     position: relative;
 }
 
+.sectionPosts{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    gap: 30px;
+}
+
 .listPost {
     width: auto;
     display: flex;
@@ -23,18 +31,12 @@
     display: flex;
     align-items: center;
     position: relative;
-    width: 1120px;
+    width: 100%;
 }
 
 .overflowListPost {
-    padding-right: 20px;
     width: 100%;
-    gap: 30px;
-    display: flex;
-    overflow-x: auto;
-    height: 450px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    margin-bottom: 20px;
 }
 
 .overflowListPost::-webkit-scrollbar {

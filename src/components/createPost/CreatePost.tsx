@@ -303,7 +303,7 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                 />
                 <textarea 
                     onChange={HandleChanges.handleText} 
-                    placeholder="Clique ou arraste o arquivo para esta área para fazer upload" 
+                    placeholder="Faça uma descrição" 
                     value={text}
                 />
                 <div
@@ -343,7 +343,11 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                                 }} 
                             />
                         </div>
-                    ) : null}
+                    ) : (
+                        <div className="uploadOption">
+                            <p className="OptionUploadP">Clique ou arraste o arquivo para esta área para fazer upload</p>
+                        </div>
+                    )}
                 </div>
                 <div className="optionCreatePost">
                     <div className="editOptionCreatePost">
@@ -368,12 +372,13 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                             alt="x" 
                             className="exitConfirmOptionCreatePost" 
                             onClick={()=>{
-                                setTruePost(false)
                                 setText("")
                                 setTitle("")
                                 setFavorite(false)
                                 setFilePreview(null)
                                 setFileName(null)
+                                setTruePost(false)
+                                
                             }}
                         />
                     </div>
@@ -399,7 +404,7 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                 setTruePost(true)
             }}>
                <div className="TitleCreatePost">
-                    <input type="text" placeholder="Título" onChange={HandleChanges.handleTitle} />
+                    <input type="text" placeholder="Título" onChange={HandleChanges.handleTitle} value={"Título"}/>
                     <img 
                             src={star} 
                             alt="estrela" 
@@ -410,7 +415,8 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                     style={{border:"1px solid rgba(217, 217, 217, 1)"}} 
                 />
                 <textarea 
-                    onChange={HandleChanges.handleText} 
+                    onChange={HandleChanges.handleText}
+                    value={"Criar nota..."} 
                     placeholder="Criar nota..." 
                 />
             </main>

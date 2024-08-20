@@ -121,8 +121,9 @@
 @media (max-width:600px){
 
     .carousel {
-        width: 250px;
+        width: 260px;
         height: auto;
+       
     }
     
     .overflowListPost {
@@ -131,7 +132,7 @@
         gap: 0px;
         flex-direction: column;
         height: auto;
-        margin-bottom: 20px;
+        padding-bottom: 20px;
     }
 
     .carousel-button.prev {

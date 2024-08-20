@@ -320,8 +320,8 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                         onChange={handleFileSelect}
                     />
                     {filePreview && fileName == null? (
-                        <div >
-                            <img src={filePreview} className="imgFile" alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px' }} />
+                        <div className="imgFile">
+                            <img src={filePreview}  alt="Preview" className="imgImgFile" style={{ maxWidth: '100%', maxHeight: '200px' }} />
                             <img 
                                 src={exit} 
                                 alt="x" 

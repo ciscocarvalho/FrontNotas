@@ -7,7 +7,8 @@ export type postGet = {
   media: string[];
   color: string;
   favorite: boolean;
-  id: string;  
+  id: string; 
+  date: string; 
 }
 
 interface GetResult {
@@ -24,8 +25,6 @@ export const useGetPosts = (): GetResult => {
         id: doc.id,  
         ...doc.data() as Omit<postGet, 'id'> 
       }));
-
-      console.log(posts);  
 
       return posts;
     } catch (e) {

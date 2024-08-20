@@ -22,7 +22,9 @@ export const usePosts = (): PostResult => {
         text: post.text,
         favorite: post.favorite,
         color: post.color,
-        media: post.media
+        date: new Date().toISOString(),
+        media: post.media,
+       
       });
       console.log(docRef)
       return `Post created successfully.`;

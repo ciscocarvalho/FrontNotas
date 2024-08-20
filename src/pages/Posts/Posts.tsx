@@ -41,17 +41,21 @@ const Posts = () => {
     }, []);
 
     useEffect(() => {
+        setCurrentIndexFav(0)
+        setCurrentIndexPost(0)
         if (windowWidth < 1520) {
-            if(windowWidth < 1029) {
+            if(windowWidth < 1049) {
                 if(windowWidth < 600){
                     setDateWidth(true)
                 }else{
+                    
                     setItemToShow(1);
                 }
             }else{
                 setItemToShow(2);
             }
         }else {
+            
             setItemToShow(3);
         }
     }, [windowWidth]);
@@ -78,12 +82,15 @@ const Posts = () => {
             ...doc.data()
           } as postGet));
       
+          posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      
           const filteredFavPosts = posts.filter(item => 
             item.favorite &&
             (item.text?.includes(searchTerm) || 
              item.title.includes(searchTerm) || 
              colors.some(color => color.nameColor === searchTerm && color.color === item.color))
           );
+          
           const filteredPosts = posts.filter(item => 
             item.favorite === false &&
             (item.text?.includes(searchTerm) || 
@@ -99,6 +106,7 @@ const Posts = () => {
       
         return () => unsubscribe();
       }, [searchTerm, colors]);
+      
       
 
     const handleNext = (list: postGet[], setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, currentIndex: number) => {
@@ -144,65 +152,147 @@ const Posts = () => {
 
             <Menu onSearchChange={handleSearchChange} />
             <CreatePost authentication={() => setUpdate(!update)} loadingFunction={loadinChange}/>
-            <section className="sectionPosts">
-                <section className="listPost">
-                    <p>Favoritos</p>
-                    <div className="carousel">
-                        <div className="overflowListPost">
-                        {listFavPost.map(post => (
-                                <SeePost
-                                    color={post.color}
-                                    favorite={post.favorite}
-                                    id={post.id}
-                                    media={post.media}
-                                    title={post.title}
-                                    key={post.id}
-                                    text={post.text}
-                                    authentication={() => {
-                                        setUpdate(!update)
-                                        setDeletePost(false)
-                                    }}
-                                    loadingFunction={loadinChange}
-                                    authenticationDelete={()=>{
-                                        setDeletePost(true)
-                                        setResDelete(post)
-                                    }}
-                                    trueDeletePost={post === trueDelete}
-                                    
-                                />
-                            ))}
-                        </div>
+            <section className="listPost">
+                <p>Favoritos</p>
+                <div className="carousel">
+                    <button
+                        className={`carousel-button prev ${currentIndexFav === 0 ? 'hidden' : ''}`}
+                        onClick={() => handlePrev(listFavPost, setCurrentIndexFav, currentIndexFav)}
+                    >
+                        <img src={next} alt="Previous" />
+                    </button>
+                    <div className="overflowListPost">
+                       {dateWidth?(
+                        <>
+                             {listFavPost.map(post => (
+                            <SeePost
+                                color={post.color}
+                                favorite={post.favorite}
+                                id={post.id}
+                                media={post.media}
+                                title={post.title}
+                                key={post.id}
+                                text={post.text}
+                                date={post.date}
+                                authentication={() => {
+                                    setUpdate(!update)
+                                    setDeletePost(false)
+                                }}
+                                loadingFunction={loadinChange}
+                                authenticationDelete={()=>{
+                                    setDeletePost(true)
+                                    setResDelete(post)
+                                }}
+                                trueDeletePost={post === trueDelete}
+                                
+                            />
+                        ))}
+                        </>
+                       ):(
+                        <>
+                        {listFavPost.slice(currentIndexFav, currentIndexFav + itemsToShow).map(post => (
+                            <SeePost
+                                color={post.color}
+                                favorite={post.favorite}
+                                id={post.id}
+                                media={post.media}
+                                title={post.title}
+                                key={post.id}
+                                date={post.date}
+                                text={post.text}
+                                authentication={() => {
+                                    setUpdate(!update)
+                                    setDeletePost(false)
+                                }}
+                                loadingFunction={loadinChange}
+                                authenticationDelete={()=>{
+                                    setDeletePost(true)
+                                    setResDelete(post)
+                                }}
+                                trueDeletePost={post === trueDelete}
+                                
+                            />
+                        ))}
+                        </>
+                       )}
                     </div>
-                </section>
-                <section className="listPost">
-                    <p>Outros</p>
-                    <div className="carousel">
-                        <div className="overflowListPost">
-                            {listPost.map(post => (
-                                    <SeePost
-                                        color={post.color}
-                                        favorite={post.favorite}
-                                        id={post.id}
-                                        media={post.media}
-                                        title={post.title}
-                                        key={post.id}
-                                        text={post.text}
-                                        authentication={() => {
-                                            setUpdate(!update)
-                                            setDeletePost(false)
-                                        }}
-                                        loadingFunction={loadinChange}
-                                        authenticationDelete={()=>{
-                                            setDeletePost(true)
-                                            setResDelete(post)
-                                        }}
-                                        trueDeletePost={post === trueDelete}
-                                    />
-                                ))}
-                        </div>
-                        
+                    <button
+                        className={`carousel-button next ${currentIndexFav + itemsToShow >= listFavPost.length ? 'hidden' : ''}`}
+                        onClick={() => handleNext(listFavPost, setCurrentIndexFav, currentIndexFav)}
+                    >
+                        <img src={next} alt="Next" />
+                    </button>
+                </div>
+            </section>
+            <section className="listPost">
+                <p>Outros</p>
+                <div className="carousel">
+                    <button
+                        className={`carousel-button prev ${currentIndexPost === 0 ? 'hidden' : ''}`}
+                        onClick={() => handlePrev(listPost, setCurrentIndexPost, currentIndexPost)}
+                    >
+                        <img src={next} alt="Previous" />
+                    </button>
+                    <div className="overflowListPost">
+                        {dateWidth?(
+                            <>
+                                {listPost.map(post => (
+                            <SeePost
+                                color={post.color}
+                                favorite={post.favorite}
+                                id={post.id}
+                                media={post.media}
+                                title={post.title}
+                                key={post.id}
+                                text={post.text}
+                                date={post.date}
+                                authentication={() => {
+                                    setUpdate(!update)
+                                    setDeletePost(false)
+                                }}
+                                loadingFunction={loadinChange}
+                                authenticationDelete={()=>{
+                                    setDeletePost(true)
+                                    setResDelete(post)
+                                }}
+                                trueDeletePost={post === trueDelete}
+                            />
+                        ))}
+                            </>
+                        ):(
+                            <>
+                                {listPost.slice(currentIndexPost, currentIndexPost + itemsToShow).map(post => (
+                            <SeePost
+                                color={post.color}
+                                favorite={post.favorite}
+                                id={post.id}
+                                media={post.media}
+                                title={post.title}
+                                key={post.id}
+                                text={post.text}
+                                date={post.date}
+                                authentication={() => {
+                                    setUpdate(!update)
+                                    setDeletePost(false)
+                                }}
+                                loadingFunction={loadinChange}
+                                authenticationDelete={()=>{
+                                    setDeletePost(true)
+                                    setResDelete(post)
+                                }}
+                                trueDeletePost={post === trueDelete}
+                            />
+                        ))}
+                            </>
+                        )}
                     </div>
-                </section>
+                    <button
+                        className={`carousel-button next ${currentIndexPost + itemsToShow >= listPost.length ? 'hidden' : ''}`}
+                        onClick={() => handleNext(listPost, setCurrentIndexPost, currentIndexPost)}
+                    >
+                        <img src={next} alt="Next" />
+                    </button>
+                </div>
             </section>
         </main>
     );

@@ -23,6 +23,7 @@ export type postSee = {
     color: string;
     favorite: boolean;
     id: string;
+    date: string;
     authentication: ()=>void;
     loadingFunction:(value:boolean)=>void;
     trueDeletePost: boolean;
@@ -30,7 +31,7 @@ export type postSee = {
 
   }
 
-export default function SeePost ({color, favorite, id, media, title, text, authentication, loadingFunction, authenticationDelete, trueDeletePost}:postSee){
+export default function SeePost ({color, favorite, id, media, title, text, date, authentication, loadingFunction, authenticationDelete, trueDeletePost}:postSee){
 
     const [titleN, setTitleN] = useState(title)
     const [textN, setTextN] = useState(text)
@@ -162,7 +163,8 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                             favorite: favoriteN,
                             color: colorN,
                             media: mediaL,
-                            id: id
+                            id: id,
+                            date:date
                        }
                         const res = authenticationPU(post)
                         res.then(value=>{
@@ -185,7 +187,8 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                             favorite: favoriteN,
                             color: colorN,
                             media: mediaL,
-                            id: id
+                            id: id,
+                            date:date
                        }
                         const res = authenticationPU(post)
                         res.then(value=>{
@@ -206,7 +209,8 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                 favorite: favoriteN,
                 color: colorN,
                 media: media,
-                id: id
+                id: id,
+                date:date
            }
             const res = authenticationPU(post)
             res.then(value=>{
@@ -237,7 +241,8 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                             favorite: favoriteN,
                             color: colorN,
                             media: mediaL,
-                            id: id
+                            id: id,
+                            date:date
                        }
                         const res = authenticationPU(post)
                         res.then(value=>{
@@ -261,7 +266,8 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                             favorite: favoriteN,
                             color: colorN,
                             media: mediaL,
-                            id: id
+                            id: id,
+                            date:date
                        }
                         const res = authenticationPU(post)
                         res.then(value=>{
@@ -280,7 +286,8 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
                 favorite: favoriteN,
                 color: colorN,
                 media: media,
-                id: id
+                id: id,
+                date:date
            }
             const res = authenticationPU(post)
             res.then(value=>{
@@ -341,6 +348,8 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
     },[color, favorite, media, seeEditPost, text, title])
 
     
+
+    
     return (
         <main className="allCreatePostN" style={{backgroundColor:colorN}}>
             
@@ -377,7 +386,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
         />
         <textarea 
             onChange={HandleChanges.handleText} 
-            placeholder="Clique ou arraste o arquivo para esta área para fazer upload" 
+            placeholder="Escreva uma descrição ou coloque a baixo um arquivo..." 
             value={textN}
             onClick={()=>{
                 setSeeEditPost(true)
@@ -398,7 +407,7 @@ export default function SeePost ({color, favorite, id, media, title, text, authe
             />
             {filePreview && fileName == null? (
                 <div className="imgFile">
-                    <img src={filePreview} alt="Preview"  className="imgImgFile"/>
+                    <img src={filePreview} className="imgImgFile"  alt="Preview"  />
                     {seeEditPost?(
                         <img 
                         src={exit} 

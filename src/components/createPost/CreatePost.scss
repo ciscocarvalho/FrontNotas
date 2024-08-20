@@ -157,7 +157,7 @@
     width: 90%;
     margin-bottom: 20px;
     height: 100%;
-
+    margin-top: 30px;
     p{
         color: rgba(0, 0, 0, 0.642);
         font-size: 14px;
@@ -249,7 +249,7 @@
     z-index: 999;
     position: absolute;
     display: flex;
-    bottom: -35px;
+    bottom: -60px;
     left: 35px;
     background-color: white;
     padding-top: 5px;
@@ -257,6 +257,8 @@
     padding-left: 10px;
     border-radius: 0.3rem;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.187);
+    width: 92%;
+    overflow-x: auto;
 }
 
 @media (max-width: 590px){
@@ -295,26 +297,24 @@
         height: 150px;
         display: flex;
         margin-top: 10px;
-
         .imgFile{
-            width: 100%;
+            width: 100px;
             height: 150px;
             .imgImgFile{
                 width: 100%;
-               height: 100%;
-                object-fit: cotain;
+                height: 100%;
+                object-fit: contain;
             }
         }
 
     }
 
-    
-
     .divColorBall{
         width: 85%; 
         overflow-x: auto; 
         display: flex;
-        flex-direction: row; 
+        flex-direction: row;
+      
     }
     .divColorBallCarrosel{
         display: flex;

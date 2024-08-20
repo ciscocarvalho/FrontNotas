@@ -8,6 +8,7 @@ export type PostUpdate = {
   color?: string;
   favorite?: boolean;
   id: string;
+  date?: string;
 }
 
 interface PutResult {

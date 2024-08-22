@@ -146,65 +146,11 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
 
     const authenticationPost = () =>{
         loadingFunction(true)
-        if(title === ""){
-          
-            const mediaL:string[] = []
-           if(filePreview && filePreview !== media[0]){
-                if(fileName){
-                    const cloud = cloudinary(filePreview)
-                    cloud.then(element=>{
-                        mediaL.push(element.secure_url)
-                        mediaL.push(fileName)
-                        mediaL.push(element.public_id)
 
-                        const post = {
-                            title: "Título",
-                            text: textN,
-                            favorite: favoriteN,
-                            color: colorN,
-                            media: mediaL,
-                            id: id,
-                            date:date
-                       }
-                        const res = authenticationPU(post)
-                        res.then(value=>{
-                            if(value === "Post updated successfully."){
-                                loadingFunction(false)
-                                authentication()
-                                setSeeEditPost(false)
-                            }
-                        })
-                    })
-                }else{
-                    const cloud = cloudinary(filePreview)
-                    cloud.then(element=>{
-                        mediaL.push(element.secure_url)
-                        mediaL.push(element.public_id)
-
-                        const post = {
-                            title: "Título",
-                            text: textN,
-                            favorite: favoriteN,
-                            color: colorN,
-                            media: mediaL,
-                            id: id,
-                            date:date
-                       }
-                        const res = authenticationPU(post)
-                        res.then(value=>{
-                            if(value === "Post updated successfully."){
-                                loadingFunction(false)
-                                authentication()
-                                setSeeEditPost(false)
-                            }
-                           
-                        })
-                    })
-                    
-                }
-           }else{
+        const newTitle = title === "" ? "Título" : titleN;
+        const authenticationWithMedia = (media: string[]) => {
             const post = {
-                title: "Título",
+                title: newTitle,
                 text: textN,
                 favorite: favoriteN,
                 color: colorN,
@@ -220,88 +166,21 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
                     setSeeEditPost(false)
                 }
             })
-           }
+        }
 
-           
-
+        if (filePreview && filePreview !== media[0]) {
+            const cloud = cloudinary(filePreview);
+            cloud.then(element=>{
+                const mediaL: string[] = [];
+                mediaL.push(element.secure_url);
+                if (fileName) {
+                    mediaL.push(fileName);
+                }
+                mediaL.push(element.public_id);
+                authenticationWithMedia(mediaL);
+            });
         }else{
-           
-            const mediaL:string[] = []
-            if(filePreview && filePreview !== media[0]){
-                if(fileName){
-                  
-                    const cloud = cloudinary(filePreview)
-                    cloud.then(element=>{
-                        mediaL.push(element.secure_url)
-                        mediaL.push(fileName)
-                        mediaL.push(element.public_id)
-                        const post = {
-                            title: titleN,
-                            text: textN,
-                            favorite: favoriteN,
-                            color: colorN,
-                            media: mediaL,
-                            id: id,
-                            date:date
-                       }
-                        const res = authenticationPU(post)
-                        res.then(value=>{
-                            if(value === "Post updated successfully."){
-                                loadingFunction(false)
-                                authentication()
-                                setSeeEditPost(false)
-                            }
-                        })
-                    })
-                }else{
-                    
-                    const cloud = cloudinary(filePreview)
-                    cloud.then(element=>{
-                        mediaL.push(element.secure_url)
-                        mediaL.push(element.public_id)
-
-                        const post = {
-                            title: titleN,
-                            text: textN,
-                            favorite: favoriteN,
-                            color: colorN,
-                            media: mediaL,
-                            id: id,
-                            date:date
-                       }
-                        const res = authenticationPU(post)
-                        res.then(value=>{
-                            if(value === "Post updated successfully."){
-                                loadingFunction(false)
-                                authentication()
-                                setSeeEditPost(false)
-                            }
-                        })
-                    })
-                }
-           }else{
-            const post = {
-                title: titleN,
-                text: textN,
-                favorite: favoriteN,
-                color: colorN,
-                media: media,
-                id: id,
-                date:date
-           }
-            const res = authenticationPU(post)
-            res.then(value=>{
-                if(value === "Post updated successfully."){
-                    loadingFunction(false)
-                    authentication()
-                    setSeeEditPost(false)
-                }
-            })
-           }
-
-          
-          
-           
+            authenticationWithMedia(media);
         }
     }
 

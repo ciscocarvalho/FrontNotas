@@ -36,6 +36,7 @@ export default function Username (){
                     type="text"
                     value={isInitialRender ? username : undefined}
                     onFocus={() => setEditing(true)}
+                    onBlur={cancel}
                 />
                 {
                     !editing

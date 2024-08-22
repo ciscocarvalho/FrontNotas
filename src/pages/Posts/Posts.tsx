@@ -178,6 +178,7 @@ const Posts = () => {
                                     key={post.id}
                                     text={post.text}
                                     date={post.date}
+                                    currentEditors={post.currentEditors}
                                     authentication={() => {
                                         setUpdate(!update)
                                         setDeletePost(false)
@@ -203,6 +204,7 @@ const Posts = () => {
                                     title={post.title}
                                     key={post.id}
                                     date={post.date}
+                                    currentEditors={post.currentEditors}
                                     text={post.text}
                                     authentication={() => {
                                         setUpdate(!update)
@@ -250,6 +252,7 @@ const Posts = () => {
                                     key={post.id}
                                     text={post.text}
                                     date={post.date}
+                                    currentEditors={post.currentEditors}
                                     authentication={() => {
                                         setUpdate(!update)
                                         setDeletePost(false)
@@ -275,6 +278,7 @@ const Posts = () => {
                                     key={post.id}
                                     text={post.text}
                                     date={post.date}
+                                    currentEditors={post.currentEditors}
                                     authentication={() => {
                                         setUpdate(!update)
                                         setDeletePost(false)

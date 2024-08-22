@@ -9,6 +9,7 @@ export type PostUpdate = {
   favorite?: boolean;
   id: string;
   date?: string;
+  currentEditors?: string[];
 }
 
 interface PutResult {

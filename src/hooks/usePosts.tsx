@@ -7,6 +7,7 @@ export type Post = {
   media: string[];
   color: string;
   favorite: boolean;
+  currentEditors?: string[];
 }
 
 interface PostResult {
@@ -24,7 +25,7 @@ export const usePosts = (): PostResult => {
         color: post.color,
         date: new Date().toISOString(),
         media: post.media,
-       
+        currentEditors: [],
       });
       console.log(docRef)
       return `Post created successfully.`;

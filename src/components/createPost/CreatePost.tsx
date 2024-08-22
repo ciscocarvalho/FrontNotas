@@ -119,7 +119,8 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                             text: text,
                             favorite: favorite,
                             color: color,
-                            media: media
+                            media: media,
+                            currentEditors: [],
                        }
                         const res = authenticationP(post)
                         res.then(value=>{
@@ -145,7 +146,8 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                             text: text,
                             favorite: favorite,
                             color: color,
-                            media: media
+                            media: media,
+                            currentEditors: [],
                        }
                         const res = authenticationP(post)
                         res.then(value=>{
@@ -169,7 +171,8 @@ export default function CreatePost ({authentication, loadingFunction}:create){
                 text: text,
                 favorite: favorite,
                 color: color,
-                media: media
+                media: media,
+                currentEditors: [],
            }
             const res = authenticationP(post)
             res.then(value=>{

@@ -9,6 +9,7 @@ export type postGet = {
   favorite: boolean;
   id: string; 
   date: string; 
+  currentEditors?: string[];
 }
 
 interface GetResult {

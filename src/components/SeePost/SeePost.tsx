@@ -14,7 +14,7 @@ import dowload from "../../assents/dowload.png"
 import cloudinary from "../../lib/cloudinary";
 import { usePutPosts } from "../../hooks/usePutPosts";
 import { useDeletePosts } from "../../hooks/useDeletePosts";
-
+import { useUsernameContext } from "../../context/UsernameContext";
 
 export type postSee = {
     title: string;
@@ -24,6 +24,7 @@ export type postSee = {
     favorite: boolean;
     id: string;
     date: string;
+    currentEditors?: string[];
     authentication: ()=>void;
     loadingFunction:(value:boolean)=>void;
     trueDeletePost: boolean;
@@ -31,7 +32,7 @@ export type postSee = {
 
   }
 
-export default function SeePost ({color, favorite, id, media, title, text, date, authentication, loadingFunction, authenticationDelete, trueDeletePost}:postSee){
+export default function SeePost ({color, favorite, id, media, title, text, date, currentEditors, authentication, loadingFunction, authenticationDelete, trueDeletePost}:postSee){
 
     const [titleN, setTitleN] = useState(title)
     const [textN, setTextN] = useState(text)
@@ -46,6 +47,8 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
     const {authenticationPU} = usePutPosts()
     const {authenticationDE} = useDeletePosts()
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { username } = useUsernameContext();
+    const [_currentEditors, _setCurrentEditors] = useState<string[]>(currentEditors ?? []);
 
     useEffect(()=>{
         if(media.length === 3){
@@ -72,12 +75,24 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
         }
     },[authentication, authenticationDE, id, trueDeletePost])
 
+    const [isEditing, setIsEditing] = useState(false);
+    const timeoutId = useRef<ReturnType<typeof setTimeout>>();
+
     const HandleChanges = {
         handleText: (e: ChangeEvent<HTMLTextAreaElement>) => {
           setTextN(e.target.value);
+          setIsEditing(true);
+
+          if (timeoutId.current) {
+            clearTimeout(timeoutId.current);
+          }
+
+          timeoutId.current = setTimeout(() => {
+            setIsEditing(false);
+          }, 500);
         },
         handleTitle:(e:ChangeEvent<HTMLInputElement>)=>{
-            setTitleN(e.target.value)
+          setTitleN(e.target.value)
         },
       };
 
@@ -143,48 +158,73 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
         e.stopPropagation();
     };
 
+    const makeAuthenticationPost = (opts?: any) => {
+        return () =>{
+            if (!opts?.withoutLoading) {
+                loadingFunction(true)
+            }
 
-    const authenticationPost = () =>{
-        loadingFunction(true)
+            const newTitle = title === "" ? "Título" : titleN;
+            const authenticationWithMedia = (media: string[]) => {
+                const post = {
+                    title: newTitle,
+                    text: textN,
+                    favorite: favoriteN,
+                    color: colorN,
+                    media: media,
+                    id: id,
+                    date:date,
+                    currentEditors: currentEditors ?? [],
+            }
+                const res = authenticationPU(post)
+                res.then(value=>{
+                    if(value === "Post updated successfully."){
+                        if (!opts?.withoutLoading) {
+                            loadingFunction(false)
+                        }
+                        authentication()
+                        setSeeEditPost(false)
+                    }
+                })
+            }
 
-        const newTitle = title === "" ? "Título" : titleN;
-        const authenticationWithMedia = (media: string[]) => {
-            const post = {
-                title: newTitle,
-                text: textN,
-                favorite: favoriteN,
-                color: colorN,
-                media: media,
-                id: id,
-                date:date
-           }
-            const res = authenticationPU(post)
-            res.then(value=>{
-                if(value === "Post updated successfully."){
-                    loadingFunction(false)
-                    authentication()
-                    setSeeEditPost(false)
-                }
-            })
-        }
-
-        if (filePreview && filePreview !== media[0]) {
-            const cloud = cloudinary(filePreview);
-            cloud.then(element=>{
-                const mediaL: string[] = [];
-                mediaL.push(element.secure_url);
-                if (fileName) {
-                    mediaL.push(fileName);
-                }
-                mediaL.push(element.public_id);
-                authenticationWithMedia(mediaL);
-            });
-        }else{
-            authenticationWithMedia(media);
+            if (filePreview && filePreview !== media[0]) {
+                const cloud = cloudinary(filePreview);
+                cloud.then(element=>{
+                    const mediaL: string[] = [];
+                    mediaL.push(element.secure_url);
+                    if (fileName) {
+                        mediaL.push(fileName);
+                    }
+                    mediaL.push(element.public_id);
+                    authenticationWithMedia(mediaL);
+                });
+            }else{
+                authenticationWithMedia(media);
+            }
         }
     }
 
-    
+    const authenticationPost = makeAuthenticationPost();
+    let debounceTimeoutId = useRef<ReturnType<typeof setTimeout>>();
+
+    useEffect(() => {
+        if (debounceTimeoutId.current) {
+            clearTimeout(debounceTimeoutId.current);
+        }
+
+        debounceTimeoutId.current = setTimeout(() => {
+            _setCurrentEditors(currentEditors=>{
+                currentEditors = (currentEditors ?? []).filter(v=>v !== username);
+
+                if (isEditing) {
+                    currentEditors = [...(currentEditors ?? []), username];
+                }
+
+                return currentEditors
+            })
+        }, 250);
+    }, [isEditing]);
 
     const favoriteFunction = () =>{
         setFavoriteN(!favorite)
@@ -317,6 +357,15 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
                 </div>
             ) : null}
         </div>
+        {
+            _currentEditors.length === 0
+                ? null
+                : (
+                    <div>
+                        <p>({_currentEditors}) editando...</p>
+                    </div>
+                )
+        }
         <div className="optionCreatePost">
             <div className="editOptionCreatePost">
                 <div 

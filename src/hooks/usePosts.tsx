@@ -1,5 +1,6 @@
 import { collection, addDoc } from "firebase/firestore";
 import { db } from '../api/firebaseConfig';
+import { createNotas } from "../lib/elasticApi";
 
 export type Post = {
   title: string;
@@ -27,6 +28,12 @@ export const usePosts = (): PostResult => {
        
       });
       console.log(docRef)
+      createNotas(
+        post.title,
+        post.text,
+        post.media,
+        post.color,
+        post.favorite)
       return `Post created successfully.`;
     } catch (e) {
       if (e instanceof Error) {

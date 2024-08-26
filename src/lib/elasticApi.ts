@@ -5,6 +5,7 @@ export async function createNotas(id:string, titulo: string, conteudo: string|un
   console.log(titulo)
 	try {
     const response = await axios.post('http://localhost:3000/create', {
+      id:id,
       titulo: titulo,
       conteudo: conteudo,
       media: media,

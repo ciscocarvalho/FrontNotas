@@ -9,14 +9,13 @@ interface DeleteResult {
 export const useDeletePosts = (): DeleteResult => {
 
   const authenticationDE = async (id: string): Promise<string> => {
-    console.log(id)
-    console.log('dss')
+  
     try {
       const docRef = doc(db, "posts", id);
 
       await deleteDoc(docRef);
 
-      await DeleteNotas(id)
+      await DeleteNotas(docRef.id)
 
       return "Post deleted successfully.";
     } catch (error) {

@@ -27,7 +27,6 @@ export const usePosts = (): PostResult => {
         media: post.media,
        
       });
-      console.log(docRef.id)
       createNotas(
         docRef.id,
         post.title,

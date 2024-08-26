@@ -10,6 +10,7 @@ import Loading from "../../components/loading/Loading";
 import WarningMessage from "../../components/warningMessage/WarningMessage";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from '../../api/firebaseConfig'; 
+import { getNotas } from "../../lib/elasticApi";
 
 const Posts = () => {
     const { authenticationGP } = useGetPosts();
@@ -76,36 +77,111 @@ const Posts = () => {
     }, []);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
-          const posts: postGet[] = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          } as postGet));
-      
-          posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      
-          const filteredFavPosts = posts.filter(item => 
-            item.favorite &&
-            (item.text?.includes(searchTerm) || 
-             item.title.includes(searchTerm) || 
-             colors.some(color => color.nameColor === searchTerm && color.color === item.color))
-          );
-          
-          const filteredPosts = posts.filter(item => 
-            item.favorite === false &&
-            (item.text?.includes(searchTerm) || 
-             item.title.includes(searchTerm) || 
-             colors.some(color => color.nameColor === searchTerm && color.color === item.color))
-          );
-      
-          setListFavPost(filteredFavPosts);
-          setListPost(filteredPosts);
-        }, (error) => {
-          console.error("Error listening to collection: ", error);
-        });
-      
-        return () => unsubscribe();
-      }, [searchTerm, colors]);
+        setListFavPost([]);
+        setListPost([]);
+        if(searchTerm === ""){
+            const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
+            const posts: postGet[] = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            } as postGet));
+        
+            posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        
+            const filteredFavPosts = posts.filter(item => 
+                item.favorite
+            );
+            
+            const filteredPosts = posts.filter(item => 
+                item.favorite === false 
+            );
+        
+            setListFavPost(filteredFavPosts);
+            setListPost(filteredPosts);
+            setLoading(false)
+            }, (error) => {
+            console.error("Error listening to collection: ", error);
+            });
+        
+            return () => unsubscribe();
+        }else{
+            const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
+                const posts: postGet[] = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                } as postGet));
+            
+                const listElastic = getNotas(searchTerm);
+                listElastic.then(value => {
+                    if (value?.data.map !== undefined) {
+                        const updatedData = value.data.map((item: {
+                            body: string;
+                            timestamp: string;
+                        }) => ({
+                            ...item,
+                            date: item.timestamp,
+                            timestamp: undefined,
+                            text: item.body,
+                            body: undefined,
+                        }));
+                        updatedData.sort((a: { date: string | number | Date; }, b: { date: string | number | Date; }) => 
+                            new Date(b.date).getTime() - new Date(a.date).getTime()
+                        );
+            
+                        const updatedDataMap = new Map<string, any>();
+                        updatedData.forEach((item: { id: string; }) => {
+                            updatedDataMap.set(item.id, item);
+                        });
+            
+                        posts.forEach(post => {
+                            const correspondingItem = updatedDataMap.get(post.id);
+
+                            function areMediaListsEqual(list1: string[], list2: string[]): boolean {
+                                if (list1.length !== list2.length) return false;
+                                const sortedList1 = [...list1].sort();
+                                const sortedList2 = [...list2].sort();
+                                return sortedList1.every((value, index) => value === sortedList2[index]);
+                            }
+            
+                            if (correspondingItem && (
+                                post.favorite !== correspondingItem.favorite || 
+                                post.color !== correspondingItem.color || 
+                                post.title !== correspondingItem.title || 
+                                post.text !== correspondingItem.text ||
+                                !areMediaListsEqual(post.media, correspondingItem.media)
+                            )) {
+                                setUpdate(!update);
+                            } else {
+                                return;
+                            }
+                        });
+            
+                        console.log(updatedData);
+            
+                        const filteredFavPosts = updatedData.filter((item: { favorite: boolean; }) => 
+                            item.favorite === true
+                        );
+            
+                        const filteredPosts = updatedData.filter((item: { favorite: boolean; }) => 
+                            item.favorite === false 
+                        );
+            
+                        setListFavPost(filteredFavPosts);
+                        setListPost(filteredPosts);
+                        setLoading(false);
+                    } else {
+                        setListFavPost([]);
+                        setListPost([]);
+                        setLoading(false);
+                    }
+                });
+            });
+            
+            return () => unsubscribe();
+            
+           
+        }
+      }, [searchTerm, colors, update]);
       
       
 
@@ -151,7 +227,10 @@ const Posts = () => {
            ):null}
 
             <Menu onSearchChange={handleSearchChange} />
-            <CreatePost authentication={() => setUpdate(!update)} loadingFunction={loadinChange}/>
+            <CreatePost authentication={() => {
+                setUpdate(!update)
+                // setSearchTerm("")
+            }} loadingFunction={loadinChange}/>
             <section className="listPost">
                 <p>Favoritos</p>
                 <div className="carousel">

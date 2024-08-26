@@ -308,7 +308,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
     
 
     const favoriteFunction = () =>{
-        setFavoriteN(!favorite)
+        setFavoriteN((favorite)=>!favorite)
         const postN = {
             id: id,
             favorite: !favoriteN,
@@ -316,7 +316,11 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
       
         const res = authenticationPU(postN)
         res.then(value=>{
-            authentication()
+            if(value === "Post updated successfully."){
+                console.log("Aquiiiiiiiii")
+                console.log(favorite)
+                authentication()
+            }
         })
     }
 

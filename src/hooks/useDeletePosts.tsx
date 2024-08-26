@@ -1,5 +1,6 @@
 import { doc, deleteDoc } from "firebase/firestore";
 import { db } from '../api/firebaseConfig';
+import { DeleteNotas } from "../lib/elasticApi";
 
 interface DeleteResult {
   authenticationDE: (id: string) => Promise<string>;
@@ -8,10 +9,14 @@ interface DeleteResult {
 export const useDeletePosts = (): DeleteResult => {
 
   const authenticationDE = async (id: string): Promise<string> => {
+    console.log(id)
+    console.log('dss')
     try {
       const docRef = doc(db, "posts", id);
 
       await deleteDoc(docRef);
+
+      await DeleteNotas(id)
 
       return "Post deleted successfully.";
     } catch (error) {

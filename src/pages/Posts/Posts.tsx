@@ -79,7 +79,7 @@ const Posts = () => {
     useEffect(() => {
         setListFavPost([]);
         setListPost([]);
-        if(searchTerm === ""){
+        if(searchTerm === ""){ //Se não tiver search
             const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
             const posts: postGet[] = snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -104,14 +104,18 @@ const Posts = () => {
             });
         
             return () => unsubscribe();
-        }else{
+        }else{ //Se tiver search
+            //Busca em tempo real do firebase
             const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
                 const posts: postGet[] = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 } as postGet));
             
+                //Busca da API do Search
                 const listElastic = getNotas(searchTerm);
+
+                //Modifica para ficar com os valores iguais do Firebase
                 listElastic.then(value => {
                     if (value?.data.map !== undefined) {
                         const updatedData = value.data.map((item: {
@@ -124,25 +128,31 @@ const Posts = () => {
                             text: item.body,
                             body: undefined,
                         }));
+
+                        //Coloca em ordem cronológica
                         updatedData.sort((a: { date: string | number | Date; }, b: { date: string | number | Date; }) => 
                             new Date(b.date).getTime() - new Date(a.date).getTime()
                         );
-            
+                        
+                        //Cria uma lista para comparar
                         const updatedDataMap = new Map<string, any>();
                         updatedData.forEach((item: { id: string; }) => {
                             updatedDataMap.set(item.id, item);
                         });
             
                         posts.forEach(post => {
+                            //Encontra o elemento de mesmo id da lista do Firebase com o Elasticsearch
                             const correspondingItem = updatedDataMap.get(post.id);
 
+                            //Serve para comparar a media (Lista de string) dos dois
                             function areMediaListsEqual(list1: string[], list2: string[]): boolean {
                                 if (list1.length !== list2.length) return false;
                                 const sortedList1 = [...list1].sort();
                                 const sortedList2 = [...list2].sort();
                                 return sortedList1.every((value, index) => value === sortedList2[index]);
                             }
-            
+                            
+                            //Verificar se é o mesmo id e se tem os valores iguais
                             if (correspondingItem && (
                                 post.favorite !== correspondingItem.favorite || 
                                 post.color !== correspondingItem.color || 
@@ -150,14 +160,15 @@ const Posts = () => {
                                 post.text !== correspondingItem.text ||
                                 !areMediaListsEqual(post.media, correspondingItem.media)
                             )) {
+                                //Se não tiver atualiza o useEffect
                                 setUpdate(!update);
                             } else {
+                                //Só sai
                                 return;
                             }
                         });
-            
-                        console.log(updatedData);
-            
+                        
+                        //Filtra o favorito
                         const filteredFavPosts = updatedData.filter((item: { favorite: boolean; }) => 
                             item.favorite === true
                         );
@@ -165,7 +176,8 @@ const Posts = () => {
                         const filteredPosts = updatedData.filter((item: { favorite: boolean; }) => 
                             item.favorite === false 
                         );
-            
+                        
+                        //Adiciona no useState para ser mostrado usando o map em SeePosts
                         setListFavPost(filteredFavPosts);
                         setListPost(filteredPosts);
                         setLoading(false);

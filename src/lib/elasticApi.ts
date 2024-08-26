@@ -1,10 +1,10 @@
 import axios from "axios";
 
 
-export async function createNotas(titulo: string, conteudo: string|undefined, media: string[], color: string, favorite: boolean) {
+export async function createNotas(id:string, titulo: string, conteudo: string|undefined, media: string[], color: string, favorite: boolean) {
   console.log(titulo)
 	try {
-    const response = await axios.post('https://elastic-cloud.onrender.com/create', {
+    const response = await axios.post('http://localhost:3000/create', {
       titulo: titulo,
       conteudo: conteudo,
       media: media,
@@ -17,10 +17,21 @@ export async function createNotas(titulo: string, conteudo: string|undefined, me
   }
 }
 
-export async function getNotas() {
+export async function getNotas(query:string|undefined) {
   
 	try {
-    const response = await axios.get(`https://elastic-cloud.onrender.com/documents/`);
+    const response = await axios.get(`http://localhost:3000/documents/${query}`);
+    return response
+    // console.log('Documento criado com sucesso:', response.data);
+  } catch (error) {
+    console.error('Erro ao criar o documento:', error);
+  }
+}
+
+export async function DeleteNotas(postId:string|undefined) {
+  
+	try {
+    const response = await axios.delete(`http://localhost:3000/document/${postId}`);
     return response
     // console.log('Documento criado com sucesso:', response.data);
   } catch (error) {

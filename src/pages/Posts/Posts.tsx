@@ -11,6 +11,8 @@ import WarningMessage from "../../components/warningMessage/WarningMessage";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from '../../api/firebaseConfig'; 
 import { getNotas } from "../../lib/elasticApi";
+import { UsernameContextProvider } from "../../context/UsernameContext";
+import Username from "../../components/Username/Username";
 
 const Posts = () => {
     const { authenticationGP } = useGetPosts();
@@ -224,7 +226,7 @@ const Posts = () => {
 
 
 
-    return (
+    const comp = (
         <main className="allPost">
             {loading?(
                 <Loading/>
@@ -239,6 +241,7 @@ const Posts = () => {
            ):null}
 
             <Menu onSearchChange={handleSearchChange} />
+            <Username />
             <CreatePost authentication={() => {
                 setUpdate(!update)
                 // setSearchTerm("")
@@ -387,6 +390,12 @@ const Posts = () => {
             </section>
         </main>
     );
+
+    return <>
+        <UsernameContextProvider>
+            {comp}
+        </UsernameContextProvider>
+    </>;
 }
 
 export default Posts;

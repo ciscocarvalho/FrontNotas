@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import star from "../../assents/Vector.png";
 import starYellow from "../../assents/Group 2464.png";
 import pencil from "../../assents/ferramenta-lapis.png";
@@ -14,7 +14,12 @@ import dowload from "../../assents/dowload.png"
 import cloudinary from "../../lib/cloudinary";
 import { usePutPosts } from "../../hooks/usePutPosts";
 import { useDeletePosts } from "../../hooks/useDeletePosts";
+import { socket } from "../../lib/socket";
+import { useUsernameContext } from "../../context/UsernameContext";
 
+type NoteId = string;
+type Editor = { clientId: string, username: string };
+type Editors = Editor[];
 
 export type postSee = {
     title: string;
@@ -46,6 +51,47 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
     const {authenticationPU} = usePutPosts()
     const {authenticationDE} = useDeletePosts()
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { username } = useUsernameContext();
+
+    const makeEditingMessage = (editors: Editors) => {
+        // Although most common cases in which this code will run are triggered
+        // by a broadcast on server-side, there will be cases in which this is
+        // needed
+        const otherEditors = editors.filter((editor) => editor.clientId !== socket.id);
+        const usernames = otherEditors.map(({ username }) => username);
+
+        switch (usernames.length) {
+            case 0: return "";
+            case 1: return `${usernames[0]} está editando...`;
+            default: return `${usernames.join(", ")} estão editando...`;
+        }
+    };
+
+    const [editingMessage, setEditingMessage] = useState(makeEditingMessage([]));
+
+    useEffect(() => {
+        if (seeEditPost) {
+            socket.emit("editing:start", { noteId: id, username });
+        } else {
+            socket.emit("editing:stop", { noteId: id, username });
+        }
+    }, [seeEditPost, id, username]);
+
+    const onEditingUpdated = useCallback(({ noteId, editors }: { noteId: NoteId, editors: Editors }) => {
+        if (noteId === id) {
+            setEditingMessage(makeEditingMessage(editors));
+        }
+    }, [id]);
+
+    useEffect(() => {
+        socket.on("editing:start", onEditingUpdated);
+        socket.on("editing:stop", onEditingUpdated);
+
+        return () => {
+            socket.off("editing:start", onEditingUpdated);
+            socket.off("editing:stop", onEditingUpdated);
+        };
+    }, [onEditingUpdated]);
 
     useEffect(()=>{
         if(media.length === 3){
@@ -396,6 +442,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
                 setSeeEditPost(true)
             }}
         />
+        <p>{editingMessage}</p>
         <div
             className="upload"
             onDragOver={handleDragOver}

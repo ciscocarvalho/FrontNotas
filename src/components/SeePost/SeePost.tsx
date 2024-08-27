@@ -16,6 +16,8 @@ import { usePutPosts } from "../../hooks/usePutPosts";
 import { useDeletePosts } from "../../hooks/useDeletePosts";
 import { socket } from "../../lib/socket";
 import { useUsernameContext } from "../../context/UsernameContext";
+import { useInitialRender } from "../../hooks/useInitialRender";
+import { WS_SERVER_URL } from "../../constants";
 
 type NoteId = string;
 type Editor = { clientId: string, username: string };
@@ -52,6 +54,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
     const {authenticationDE} = useDeletePosts()
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { username } = useUsernameContext();
+    const isInitialRender = useInitialRender();
 
     const makeEditingMessage = (editors: Editors) => {
         // Although most common cases in which this code will run are triggered
@@ -72,10 +75,38 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
     useEffect(() => {
         if (seeEditPost) {
             socket.emit("editing:start", { noteId: id, username });
-        } else {
+        } else if (!isInitialRender) {
             socket.emit("editing:stop", { noteId: id, username });
         }
-    }, [seeEditPost, id, username]);
+    }, [seeEditPost, isInitialRender, id, username]);
+
+    useEffect(() => {
+        const callback = async () => {
+            let res;
+
+            try {
+                res = await fetch(`${WS_SERVER_URL}/editing/${id}`, {
+                    headers: { "Content-Type": "application/json" },
+                });
+            } catch (e) {
+                return;
+            }
+
+            const { data, errors } = await res.json() as { data: any, errors: any[] };
+
+            if (errors) {
+                errors.forEach((error) => console.error(error.message));
+            }
+
+            const editors = data?.editors;
+
+            if (editors) {
+                setEditingMessage(makeEditingMessage(editors));
+            }
+        };
+
+        callback();
+    }, []);
 
     const onEditingUpdated = useCallback(({ noteId, editors }: { noteId: NoteId, editors: Editors }) => {
         if (noteId === id) {
@@ -121,9 +152,11 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
     const HandleChanges = {
         handleText: (e: ChangeEvent<HTMLTextAreaElement>) => {
           setTextN(e.target.value);
+          socket.emit("editing:start", { noteId: id, username });
         },
         handleTitle:(e:ChangeEvent<HTMLInputElement>)=>{
             setTitleN(e.target.value)
+          socket.emit("editing:start", { noteId: id, username });
         },
       };
 

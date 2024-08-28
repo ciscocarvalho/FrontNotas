@@ -225,8 +225,8 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
 
     const authenticationPost = () =>{
         loadingFunction(true)
+       if(title !== titleN || favorite !== favoriteN || text !== textN || color !== colorN || filePreview !== media[0]){
         if(title === ""){
-          
             const mediaL:string[] = []
            if(filePreview && filePreview !== media[0]){
                 if(fileName){
@@ -377,11 +377,13 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
                 }
             })
            }
-
-          
-          
            
         }
+       }else{
+        console.log("Aqui")
+        loadingFunction(false)
+        setSeeEditPost(false)
+       }
     }
 
     

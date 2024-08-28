@@ -20,7 +20,7 @@ npm install
 
 Executar o projeto:
 ```
-npm run dev 
+npm run start
 ```
 
 ## Tecnologias utilizadas

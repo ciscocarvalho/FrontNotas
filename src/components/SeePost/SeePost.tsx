@@ -225,7 +225,8 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
 
     const authenticationPost = () =>{
         loadingFunction(true)
-       if(title !== titleN || favorite !== favoriteN || text !== textN || color !== colorN || (filePreview !== media[0] && filePreview !== null && media[0] !== undefined)){
+       
+       if(title !== titleN || favorite !== favoriteN || text !== textN || color !== colorN || (filePreview !== media[0] && filePreview !== null)){
         
         if(title === ""){
             const mediaL:string[] = []

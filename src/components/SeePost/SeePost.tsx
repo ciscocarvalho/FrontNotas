@@ -225,7 +225,8 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
 
     const authenticationPost = () =>{
         loadingFunction(true)
-       if(title !== titleN || favorite !== favoriteN || text !== textN || color !== colorN || filePreview !== media[0]){
+       if(title !== titleN || favorite !== favoriteN || text !== textN || color !== colorN || (filePreview !== media[0] && filePreview !== null && media[0] !== undefined)){
+        
         if(title === ""){
             const mediaL:string[] = []
            if(filePreview && filePreview !== media[0]){
@@ -248,6 +249,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
                         const res = authenticationPU(post)
                         res.then(value=>{
                             if(value === "Post updated successfully."){
+                                console.log(1)
                                 loadingFunction(false)
                                 authentication()
                                 setSeeEditPost(false)
@@ -272,6 +274,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
                         const res = authenticationPU(post)
                         res.then(value=>{
                             if(value === "Post updated successfully."){
+                                console.log(2)
                                 loadingFunction(false)
                                 authentication()
                                 setSeeEditPost(false)
@@ -294,6 +297,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
             const res = authenticationPU(post)
             res.then(value=>{
                 if(value === "Post updated successfully."){
+                    console.log(3)
                     loadingFunction(false)
                     authentication()
                     setSeeEditPost(false)
@@ -326,6 +330,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
                         const res = authenticationPU(post)
                         res.then(value=>{
                             if(value === "Post updated successfully."){
+                                console.log(4)
                                 loadingFunction(false)
                                 authentication()
                                 setSeeEditPost(false)
@@ -354,6 +359,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
                                 loadingFunction(false)
                                 authentication()
                                 setSeeEditPost(false)
+                                console.log(5)
                             }
                         })
                     })
@@ -371,6 +377,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
             const res = authenticationPU(post)
             res.then(value=>{
                 if(value === "Post updated successfully."){
+                    console.log(6)
                     loadingFunction(false)
                     authentication()
                     setSeeEditPost(false)
@@ -380,7 +387,6 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
            
         }
        }else{
-        console.log("Aqui")
         loadingFunction(false)
         setSeeEditPost(false)
        }
@@ -398,8 +404,7 @@ export default function SeePost ({color, favorite, id, media, title, text, date,
         const res = authenticationPU(postN)
         res.then(value=>{
             if(value === "Post updated successfully."){
-                console.log("Aquiiiiiiiii")
-                console.log(favorite)
+                
                 authentication()
             }
         })
